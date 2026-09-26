@@ -143,6 +143,9 @@ sesame:
     ## expose battery voltage with specified name
     battery_voltage:
       name: "Lock1_battery_voltage"
+    ## expose raw SESAME position (unitless; not converted to degrees)
+    position:
+      name: "Lock1_position"
     ## expose battery critical state as binary sensor
     battery_critical:
       name: "Lock1_battery_critical"

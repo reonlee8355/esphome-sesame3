@@ -60,6 +60,7 @@ CONF_PUBLIC_KEY = "public_key"
 CONF_SECRET = "secret"
 CONF_BATTERY_PCT = "battery_pct"
 CONF_BATTERY_VOLTAGE = "battery_voltage"
+CONF_POSITION = "position"
 CONF_BATTERY_CRITICAL = "battery_critical"
 CONF_HISTORY_TAG_S = "tag"
 CONF_HISTORY_TYPE_S = "type"
@@ -126,6 +127,20 @@ def is_lockable_model(model):
         "sesame_4",
         "sesame_5",
         "sesame_bike_2",
+        "sesame_5_pro",
+        "sesame_5_us",
+        "sesame_6",
+        "sesame_6_pro",
+    )
+
+
+def is_position_supported_model(model):
+    return model in (
+        "sesame_3",
+        "sesame_bike",
+        "sesame_cycle",
+        "sesame_4",
+        "sesame_5",
         "sesame_5_pro",
         "sesame_5_us",
         "sesame_6",
@@ -200,6 +215,12 @@ def validate_lockable(config: ConfigType) -> ConfigType:
     if not is_lockable_model(config[CONF_MODEL]):
         if CONF_LOCK in config:
             raise cv.Invalid(f"Cannot define 'lock' for {config[CONF_MODEL]}")
+    return config
+
+
+def validate_position(config: ConfigType) -> ConfigType:
+    if CONF_POSITION in config and not is_position_supported_model(config[CONF_MODEL]):
+        raise cv.Invalid(f"Cannot define 'position' for {config[CONF_MODEL]}")
     return config
 
 
@@ -348,6 +369,10 @@ CONFIG_SCHEMA = cv.All(
                 state_class=STATE_CLASS_MEASUREMENT,
                 accuracy_decimals=2,
             ),
+            cv.Optional(CONF_POSITION): sensor.sensor_schema(
+                state_class=STATE_CLASS_MEASUREMENT,
+                accuracy_decimals=0,
+            ),
             cv.Optional(CONF_BATTERY_CRITICAL): binary_sensor.binary_sensor_schema(
                 class_=BinarySensorWithInvalidate,
                 device_class=DEVICE_CLASS_BATTERY,
@@ -363,6 +388,7 @@ CONFIG_SCHEMA = cv.All(
     validate_address,
     validate_pubkey,
     validate_lockable,
+    validate_position,
     validate_always_connect,
     validate_bot_features,
 )
@@ -404,6 +430,9 @@ async def to_code(config):
     if CONF_BATTERY_VOLTAGE in config:
         s = await sensor.new_sensor(config[CONF_BATTERY_VOLTAGE])
         cg.add(var.set_battery_voltage_sensor(s))
+    if CONF_POSITION in config:
+        s = await sensor.new_sensor(config[CONF_POSITION])
+        cg.add(var.set_position_sensor(s))
     if CONF_CONNECTION_SENSOR in config:
         s = await binary_sensor.new_binary_sensor(config[CONF_CONNECTION_SENSOR])
         cg.add(var.set_connection_sensor(s))

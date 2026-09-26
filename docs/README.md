@@ -196,6 +196,10 @@ See [below](#identify-parameter-values-for-sesame-devices) for information on ho
   * **id** (*Optional*, string): Manually specify the ID for code generation. At least one of id and name must be specified.
   * **name** (*Optional*, string): The name of the sensor. At least one of id and name must be specified.
   * All other options from [sensor](https://esphome.io/components/sensor/#config-sensor)
+* **position** (*Optional*, [Sensor](https://esphome.io/components/sensor/#config-sensor)): Current raw SESAME position reported by `status.position()`. It has no unit or device class and is not converted to an angle. Supported by SESAME 3 / 4 / 5 / 5 Pro / 5 US / 6 / 6 Pro and Sesame Bike/Cycle. Use it with the lock state to implement position-based automations.
+  * **id** (*Optional*, string): Manually specify the ID for code generation. At least one of id and name must be specified.
+  * **name** (*Optional*, string): The name of the sensor. At least one of id and name must be specified.
+  * All other options from [sensor](https://esphome.io/components/sensor/#config-sensor)
 * **battery_critical** (*Optional*, [Binary Sensor](https://esphome.io/components/binary_sensor/#base-binary-sensor-configuration)): SESAME battery critical state is exposed as a binary sensor.
   * **id** (*Optional*, string): Manually specify the ID for code generation. At least one of id and name must be specified.
   * **name** (*Optional*, string): The name of the sensor. At least one of id and name must be specified.
@@ -401,9 +405,9 @@ sesame:
 > including `esp32_ble_tracker`. Once you have identified SESAME's BLE address,
 > you will need to remove the above configuration.</b>
 
-# Expose SESAME battery information as sensor value
+# Expose SESAME status as sensor values
 
-You can expose SESAME battery remaining percentage and voltage value, then show on your dashboard, use with your automation and etc. (in ESPHome and HomeAssistant)
+You can expose the SESAME battery remaining percentage, voltage, and raw position, then show them on your dashboard or use them with automations in ESPHome and Home Assistant. The position value is the unconverted value from `status.position()` and has no unit; verify the range on your device before using it in a lock/unlock-position automation.
 ![example dashboard](example-dashboard.jpg)
 
 ```yaml
@@ -413,6 +417,8 @@ sesame:
     name: "Lock1_battery_level"
   battery_voltage:
     name: "Lock1_battery_voltage"
+  position:
+    name: "SESAME Position"
 ```
 # Operation History TAG and History type
 
