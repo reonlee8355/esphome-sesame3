@@ -73,6 +73,7 @@ class SesameComponent : public PollingComponent {
 	void loop() override;
 	void set_battery_pct_sensor(sensor::Sensor* sensor) { pct_sensor = sensor; }
 	void set_battery_voltage_sensor(sensor::Sensor* sensor) { voltage_sensor = sensor; }
+	void set_position_sensor(sensor::Sensor* sensor) { position_sensor = sensor; }
 	void set_connection_sensor(binary_sensor::BinarySensor* sensor) { connection_sensor = sensor; }
 	void set_battery_critical_sensor(BinarySensorWithInvalidate* sensor) { battery_critical_sensor = sensor; }
 	void set_connect_retry_limit(uint16_t retry_limit) { connect_limit = retry_limit; }
@@ -94,6 +95,7 @@ class SesameComponent : public PollingComponent {
 	const char* TAG = "";
 	sensor::Sensor* pct_sensor = nullptr;
 	sensor::Sensor* voltage_sensor = nullptr;
+	sensor::Sensor* position_sensor = nullptr;
 	BinarySensorWithInvalidate* battery_critical_sensor = nullptr;
 	Feature* feature = nullptr;
 	binary_sensor::BinarySensor* connection_sensor = nullptr;
